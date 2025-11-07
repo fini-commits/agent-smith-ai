@@ -1,0 +1,113 @@
+# Test Agent Smith APIs
+# Simple REST client tests for the orchestrator and worker
+
+### Check Worker Health
+GET http://localhost:8002/health
+
+###
+
+### Take Screenshot
+POST http://localhost:8002/screenshot
+Content-Type: application/json
+
+###
+
+### Get Screen Size
+GET http://localhost:8002/screen_size
+
+###
+
+### Get Mouse Position
+GET http://localhost:8002/mouse_position
+
+###
+
+### Execute Action - Move Mouse
+POST http://localhost:8002/action
+Content-Type: application/json
+
+{
+  "type": "move",
+  "x": 500,
+  "y": 300
+}
+
+###
+
+### Execute Action - Click
+POST http://localhost:8002/action
+Content-Type: application/json
+
+{
+  "type": "click",
+  "button": "left"
+}
+
+###
+
+### Reset Session
+POST http://localhost:8002/reset_session
+
+###
+
+### Check Orchestrator
+GET http://localhost:8010/
+
+###
+
+### Get All Runs
+GET http://localhost:8010/runs
+
+###
+
+### Create New Run
+POST http://localhost:8010/run
+Content-Type: application/json
+
+{
+  "text": "Test mouse movement and click"
+}
+
+###
+
+### Get Run Details (replace {run_id} with actual ID)
+GET http://localhost:8010/runs/{run_id}
+
+###
+
+### Approve Step (replace IDs with actual values)
+POST http://localhost:8010/runs/{run_id}/approve
+Content-Type: application/json
+
+{
+  "step_id": "{step_id}"
+}
+
+###
+
+### Reject Step (replace IDs with actual values)
+POST http://localhost:8010/runs/{run_id}/reject
+Content-Type: application/json
+
+{
+  "step_id": "{step_id}"
+}
+
+###
+
+### Get Settings
+GET http://localhost:8010/settings
+
+###
+
+### Update Settings
+POST http://localhost:8010/settings
+Content-Type: application/json
+
+{
+  "mode": "approval",
+  "rate_limit": 2,
+  "step_timeout": 60
+}
+
+###

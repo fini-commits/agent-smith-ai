@@ -1,0 +1,29 @@
+{
+  "name": "agent-smith",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AI Terminal Control System - Monorepo",
+  "packageManager": "pnpm@8.15.0",
+  "scripts": {
+    "dev:web": "pnpm --filter web dev",
+    "dev:orchestrator": "cd services/orchestrator && uvicorn main:app --reload --port 8010",
+    "dev:worker": "cd workers/terminal && uvicorn main:app --reload --host 0.0.0.0 --port 8002",
+    "dev:all": "concurrently \"pnpm dev:web\" \"pnpm dev:orchestrator\" \"pnpm dev:worker\"",
+    "build:web": "pnpm --filter web build",
+    "start:web": "pnpm --filter web start",
+    "lint": "pnpm --filter web lint",
+    "format": "prettier --write \"apps/**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "format:python": "cd services/orchestrator && black . && cd ../../workers/terminal && black .",
+    "lint:python": "cd services/orchestrator && ruff check . && cd ../../workers/terminal && ruff check .",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "prettier": "^3.1.1"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}
