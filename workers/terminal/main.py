@@ -86,13 +86,13 @@ def screenshot():
         # Grab primary monitor (monitor 1)
         monitor = grabber.monitors[1]
         shot = grabber.grab(monitor)
-        
+
         # Convert to PNG bytes
         png_bytes = mss.tools.to_png(shot.rgb, shot.size)
-        
+
         # Encode to base64
         b64 = base64.b64encode(png_bytes).decode()
-        
+
         return {
             "image_base64": b64,
             "width": shot.width,
@@ -107,13 +107,13 @@ def screenshot():
 def execute_action(action: Action):
     """Execute a mouse/keyboard action"""
     global last_action_time
-    
+
     # Rate limiting
     current_time = time.time()
     time_since_last = current_time - last_action_time
     if time_since_last < MIN_ACTION_INTERVAL:
         time.sleep(MIN_ACTION_INTERVAL - time_since_last)
-    
+
     try:
         # If actions are disabled, simulate success without performing any pyautogui calls
         if not ACTIONS_ENABLED:
@@ -207,14 +207,37 @@ def get_mouse_position():
     return {"x": x, "y": y}
 
 
+# Runtime control endpoints
+class ActionsToggle(BaseModel):
+    enabled: bool
+
+
+@app.get("/actions_enabled")
+def actions_enabled():
+    """Return whether real actions are enabled"""
+    return {"actions_enabled": ACTIONS_ENABLED}
+
+
+@app.post("/set_actions_enabled")
+def set_actions_enabled(toggle: ActionsToggle):
+    """Enable or disable performing real mouse/keyboard actions at runtime.
+
+    WARNING: enabling real actions will move your mouse and type on the host.
+    Only enable inside a VM or sandbox.
+    """
+    global ACTIONS_ENABLED
+    ACTIONS_ENABLED = bool(toggle.enabled)
+    return {"actions_enabled": ACTIONS_ENABLED}
+
+
 if __name__ == "__main__":
     import uvicorn
-    
-    print("\n" + "="*60)
+
+    print("\n" + "=" * 60)
     print("⚠️  WARNING: TERMINAL WORKER STARTING ⚠️")
-    print("="*60)
+    print("=" * 60)
     print("This service will control mouse and keyboard.")
     print("ONLY run this inside a VM or sandbox!")
-    print("="*60 + "\n")
-    
+    print("=" * 60 + "\n")
+
     uvicorn.run(app, host="0.0.0.0", port=8002)
